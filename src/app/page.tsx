@@ -1,10 +1,10 @@
 "use client";
 
 import { useState, useEffect } from "react";
+import ReactMarkdown from "react-markdown";
 import { ToolCallBlock } from "@/components/ToolCallBlock";
 import { DisplayConfig } from "@/components/DisplayConfig";
 import { ToolCallDisplayConfig } from "@/types/tool-calls";
-
 export default function Home() {
   const [displayConfig, setDisplayConfig] = useState<ToolCallDisplayConfig>({
     str_replace_editor: "expanded",
@@ -12,6 +12,7 @@ export default function Home() {
     think: "expanded",
     bash: "condensed",
     create_issue: "expanded",
+    report_progress: "expanded",
   });
 
   // State for parsed tool calls
@@ -197,8 +198,8 @@ export default function Home() {
           {messages.map((message, index) => (
             <div key={index}>
               {message.type === "text" ? (
-                <div className="prose max-w-none mb-4">
-                  <p>{message.content}</p>
+                <div className="prose prose-slate max-w-none mb-4">
+                  <ReactMarkdown>{message.content}</ReactMarkdown>
                 </div>
               ) : (
                 <ToolCallBlock
