@@ -1,14 +1,9 @@
-import { Inter, Inter as InterMono } from "next/font/google";
+import { Inter } from "next/font/google";
 import "./globals.css";
 import "@primer/octicons/index.scss";
 
 const inter = Inter({
   variable: "--font-inter",
-  subsets: ["latin"],
-});
-
-const interMono = InterMono({
-  variable: "--font-inter-mono",
   subsets: ["latin"],
 });
 
@@ -20,9 +15,7 @@ export const metadata = {
 export default function RootLayout({ children }) {
   return (
     <html lang="en">
-      <body className={`${inter.variable} ${interMono.variable} antialiased`}>
-        {children}
-      </body>
+      <body className={`${inter.variable} antialiased`}>{children}</body>
     </html>
   );
 }

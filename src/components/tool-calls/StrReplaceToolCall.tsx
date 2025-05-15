@@ -66,6 +66,7 @@ export function StrReplaceToolCall({
       displayMode={displayMode}
       output={output}
       hideInitialIcon={true}
+      hideArguments={true}
       title={title}
       metadata={args}
       defaultCollapsed={true}

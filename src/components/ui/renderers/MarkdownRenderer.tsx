@@ -30,7 +30,7 @@ export function MarkdownRenderer({
             if (isInline) {
               return (
                 <code
-                  className="bg-gray-100 text-sm px-1 py-0.5 rounded"
+                  className="bg-gray-100 text-sm px-1 py-0.5 rounded font-mono"
                   {...props}
                 >
                   {children}
@@ -43,13 +43,13 @@ export function MarkdownRenderer({
           },
           // Style for headings
           h1: ({ children }) => (
-            <h1 className="text-2xl font-bold my-4">{children}</h1>
+            <h1 className="text-xl font-semibold my-4">{children}</h1>
           ),
           h2: ({ children }) => (
-            <h2 className="text-xl font-bold my-3">{children}</h2>
+            <h2 className="text-lg font-semibold my-3">{children}</h2>
           ),
           h3: ({ children }) => (
-            <h3 className="text-lg font-bold my-2">{children}</h3>
+            <h3 className="font-semibold my-2">{children}</h3>
           ),
           // Style for paragraphs
           p: ({ children }) => <p className="my-2">{children}</p>,

@@ -53,6 +53,11 @@ export function FigmaToolCall({
     ...(metadata || {}),
   };
 
+  // Custom renderer for the arguments
+  const renderArguments = (args: Record<string, any>) => (
+    <div className="text-sm text-gray-700 py-2.5 px-3">fileKey: {fileKey}</div>
+  );
+
   return (
     <BaseToolCall
       toolCall={toolCall}
@@ -64,6 +69,7 @@ export function FigmaToolCall({
       metadata={combinedMetadata}
       defaultCollapsed={false}
       modelInfo={modelInfo}
+      renderArguments={renderArguments}
     />
   );
 }

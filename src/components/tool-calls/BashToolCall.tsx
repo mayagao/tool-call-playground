@@ -158,6 +158,13 @@ export function BashToolCall({
     ...(metadata || {}),
   };
 
+  // Custom renderer for the arguments
+  const renderArguments = (args: Record<string, any>) => (
+    <div className="bg-gray-50 font-mono text-sm px-3 py-2.5 rounded-b-md">
+      {command}
+    </div>
+  );
+
   return (
     <BaseToolCall
       toolCall={toolCall}
@@ -168,6 +175,7 @@ export function BashToolCall({
       metadata={combinedMetadata}
       defaultCollapsed={false}
       modelInfo={modelInfo}
+      renderArguments={renderArguments}
     />
   );
 }

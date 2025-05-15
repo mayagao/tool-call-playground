@@ -25,6 +25,7 @@ export function DisplayConfig({
       "think",
       "create_issue",
       "report_progress",
+      "endBlocks",
     ];
     return expandedDefaults.includes(toolType);
   };

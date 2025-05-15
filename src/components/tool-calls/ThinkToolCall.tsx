@@ -54,7 +54,9 @@ export function ThinkToolCall({
   // Generate a title that shows thought timing + truncated thought
   const title = (
     <div className="flex items-center gap-1">
-      <span className="font-medium">Thought {thinkingTimeText}:</span>
+      <span className="font-medium text-gray-500 mr-1">
+        Thought {thinkingTimeText}
+      </span>
       <span className="text-gray-700">
         {thought.substring(0, 50)}
         {thought.length > 50 ? "..." : ""}
@@ -65,7 +67,11 @@ export function ThinkToolCall({
   // Custom renderer for the arguments (the thought)
   const renderArguments = (args: Record<string, any>) => {
     const thoughtContent = args.thought || args.message || "";
-    return <MarkdownRenderer content={thoughtContent} />;
+    return (
+      <div className="px-3">
+        <MarkdownRenderer content={thoughtContent} />
+      </div>
+    );
   };
 
   return (
@@ -73,7 +79,7 @@ export function ThinkToolCall({
       toolCall={toolCall}
       displayMode={displayMode}
       output={output}
-      icon={<Brain size={16} className="text-yellow-500" />}
+      icon={<Brain size={16} className="text-gray-500" />}
       title={title}
       metadata={{
         ...args,

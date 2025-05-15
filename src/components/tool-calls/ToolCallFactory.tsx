@@ -5,6 +5,8 @@ import {
   BashToolCall,
   BaseToolCall,
   StrReplaceToolCall,
+  CreateIssueToolCall,
+  ReportProgressToolCall,
 } from "./index";
 import { FileText } from "lucide-react";
 
@@ -87,6 +89,38 @@ export function ToolCallFactory({
         toolCall={toolCall}
         displayMode={displayMode}
         output={output}
+      />
+    );
+  }
+
+  if (
+    functionName.includes("createissue") ||
+    functionName.includes("create_issue") ||
+    functionName.includes("issue")
+  ) {
+    return (
+      <CreateIssueToolCall
+        toolCall={toolCall}
+        displayMode={displayMode}
+        output={output}
+        modelInfo={modelInfo}
+        metadata={metadata}
+      />
+    );
+  }
+
+  if (
+    functionName.includes("report_progress") ||
+    functionName.includes("reportprogress") ||
+    functionName.includes("progress")
+  ) {
+    return (
+      <ReportProgressToolCall
+        toolCall={toolCall}
+        displayMode={displayMode}
+        output={output}
+        modelInfo={modelInfo}
+        metadata={metadata}
       />
     );
   }

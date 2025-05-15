@@ -17,6 +17,7 @@ export interface BaseToolCallProps {
   metadata?: Record<string, any>;
   defaultCollapsed?: boolean;
   hideInitialIcon?: boolean;
+  hideArguments?: boolean;
   renderArguments?: (args: Record<string, any>) => ReactNode;
   modelInfo?: {
     name?: string;
@@ -38,6 +39,7 @@ export function BaseToolCall({
   defaultCollapsed = false,
   modelInfo,
   hideInitialIcon = false,
+  hideArguments = false,
   renderArguments,
 }: BaseToolCallProps) {
   const [isCollapsed, setIsCollapsed] = useState(defaultCollapsed);
@@ -73,11 +75,15 @@ export function BaseToolCall({
 
   return (
     <div
-      className="border rounded-md pl-2 pr-3 py-2.5 bg-white"
+      className="border rounded-md bg-white"
       onMouseEnter={() => setIsHovering(true)}
       onMouseLeave={() => setIsHovering(false)}
     >
-      <div className="flex items-center justify-between">
+      <div
+        className={`flex items-center justify-between pl-2 pr-3 py-2.5 ${
+          isCollapsed ? "" : "border-b border-gray-200"
+        } `}
+      >
         <div
           className="flex items-center space-x-2 cursor-pointer"
           onClick={handleExpandClick}
@@ -114,22 +120,22 @@ export function BaseToolCall({
 
       {!isCollapsed && !isCondensed && (
         <>
-          <div className="mt-2">
-            <div className="text-sm text-gray-600 mb-2">Arguments:</div>
-            {renderArguments ? (
-              renderArguments(parsedArguments)
-            ) : (
-              <ContentRenderer
-                content={JSON.stringify(parsedArguments, null, 2)}
-                contentType="code"
-                language="json"
-              />
-            )}
-          </div>
+          {!hideArguments && (
+            <div className="">
+              {renderArguments ? (
+                renderArguments(parsedArguments)
+              ) : (
+                <ContentRenderer
+                  content={JSON.stringify(parsedArguments, null, 2)}
+                  contentType="code"
+                  language="json"
+                />
+              )}
+            </div>
+          )}
 
           {output && (
-            <div className="mt-4">
-              <div className="text-sm text-gray-600 mb-2">Output:</div>
+            <div className="">
               <ContentRenderer content={output} contentType="auto" />
             </div>
           )}

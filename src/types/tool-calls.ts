@@ -34,8 +34,8 @@ export type ToolCallResult = {
   };
 };
 
-export type ToolCallDisplayMode = "condensed" | "expanded";
+export type ToolCallDisplayMode = "expanded" | "condensed";
 
-export type ToolCallDisplayConfig = {
+export interface ToolCallDisplayConfig {
   [key: string]: ToolCallDisplayMode;
-};
+}

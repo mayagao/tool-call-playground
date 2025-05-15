@@ -5,6 +5,8 @@ import ReactMarkdown from "react-markdown";
 import { DisplayConfig } from "@/components/DisplayConfig";
 import { ToolCallDisplayConfig } from "@/types/tool-calls";
 import { ToolCallFactory } from "@/components/tool-calls";
+import { EndBlockDetector } from "@/components/endBlocks";
+import { ContentRenderer } from "@/components/ui/renderers";
 
 export default function Home() {
   const [displayConfig, setDisplayConfig] = useState<ToolCallDisplayConfig>({
@@ -14,6 +16,7 @@ export default function Home() {
     bash: "condensed",
     create_issue: "expanded",
     report_progress: "expanded",
+    endBlocks: "expanded",
   });
 
   // State for parsed tool calls
@@ -90,6 +93,7 @@ export default function Home() {
                 timestamp: new Date(
                   Date.now() + timeOffset * 1000
                 ).toISOString(),
+                finish_reason: choice.finish_reason || null,
               };
 
               // Increase time offset for next message
@@ -206,6 +210,7 @@ export default function Home() {
             // Get additional metadata from the delta with sequential timestamps
             const additionalMetadata: Record<string, any> = {
               timestamp: new Date(Date.now() + timeOffset * 1000).toISOString(),
+              finish_reason: choice.finish_reason || null,
             };
 
             // Increase time offset for next message
@@ -304,8 +309,26 @@ export default function Home() {
             return (
               <div key={index}>
                 {message.type === "text" ? (
-                  <div className="react-markdown">
-                    <ReactMarkdown>{message.content}</ReactMarkdown>
+                  <div>
+                    {/* Check if this is an end block first */}
+                    {message.metadata?.finish_reason === "stop" &&
+                    message.content.trim().startsWith("<") ? (
+                      displayConfig.endBlocks === "expanded" ? (
+                        <EndBlockDetector
+                          content={message.content}
+                          finishReason={message.metadata?.finish_reason}
+                        />
+                      ) : (
+                        <div className="border rounded-md bg-gray-100 p-2 text-sm text-gray-600">
+                          Special block detected (condensed view)
+                        </div>
+                      )
+                    ) : (
+                      <ContentRenderer
+                        content={message.content}
+                        contentType="markdown"
+                      />
+                    )}
                   </div>
                 ) : (
                   <ToolCallFactory
