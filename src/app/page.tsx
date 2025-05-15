@@ -2,9 +2,10 @@
 
 import { useState, useEffect } from "react";
 import ReactMarkdown from "react-markdown";
-import { ToolCallBlock } from "@/components/ToolCallBlock";
 import { DisplayConfig } from "@/components/DisplayConfig";
 import { ToolCallDisplayConfig } from "@/types/tool-calls";
+import { ToolCallFactory } from "@/components/tool-calls";
+
 export default function Home() {
   const [displayConfig, setDisplayConfig] = useState<ToolCallDisplayConfig>({
     str_replace_editor: "expanded",
@@ -26,6 +27,15 @@ export default function Home() {
       content: string;
       toolCall?: any;
       output?: string;
+      modelInfo?: {
+        name?: string;
+        usage?: {
+          completion_tokens?: number;
+          prompt_tokens?: number;
+          total_tokens?: number;
+        };
+      };
+      metadata?: Record<string, any>;
     }>
   >([]);
 
@@ -44,14 +54,39 @@ export default function Home() {
             content: string;
             toolCall?: any;
             output?: string;
+            modelInfo?: {
+              name?: string;
+              usage?: {
+                completion_tokens?: number;
+                prompt_tokens?: number;
+                total_tokens?: number;
+              };
+            };
+            metadata?: Record<string, any>;
           }> = [];
 
           // Process each result sequentially to maintain proper ordering
           data.results.forEach((result: any) => {
+            // Extract only the essential model info from the result
+            const modelInfo = {
+              name: result.model,
+              usage: {
+                completion_tokens: result.usage?.completion_tokens,
+                prompt_tokens: result.usage?.prompt_tokens,
+                total_tokens: result.usage?.total_tokens,
+              },
+            };
+
             result.choices.forEach((choice: any) => {
               const hasToolCalls =
                 choice.delta.tool_calls && choice.delta.tool_calls.length > 0;
               const hasContent = !!choice.delta.content;
+
+              // Get additional metadata from the delta
+              const additionalMetadata: Record<string, any> = {};
+              if (choice.delta.reasoning_text) {
+                additionalMetadata.reasoning_text = choice.delta.reasoning_text;
+              }
 
               // If delta contains tool calls, process them with the content from the same choice
               if (hasToolCalls) {
@@ -69,6 +104,8 @@ export default function Home() {
                       content: "",
                       toolCall: toolCall,
                       output: choice.delta.content || "", // Content from the same choice
+                      modelInfo: modelInfo,
+                      metadata: additionalMetadata,
                     });
                   } else if (
                     hasContent &&
@@ -85,6 +122,8 @@ export default function Home() {
                 messages.push({
                   type: "text",
                   content: choice.delta.content,
+                  modelInfo: modelInfo,
+                  metadata: additionalMetadata,
                 });
               }
             });
@@ -122,14 +161,39 @@ export default function Home() {
           content: string;
           toolCall?: any;
           output?: string;
+          modelInfo?: {
+            name?: string;
+            usage?: {
+              completion_tokens?: number;
+              prompt_tokens?: number;
+              total_tokens?: number;
+            };
+          };
+          metadata?: Record<string, any>;
         }> = [];
 
         // Process each result sequentially
         data.results.forEach((result: any) => {
+          // Extract only the essential model info from the result
+          const modelInfo = {
+            name: result.model,
+            usage: {
+              completion_tokens: result.usage?.completion_tokens,
+              prompt_tokens: result.usage?.prompt_tokens,
+              total_tokens: result.usage?.total_tokens,
+            },
+          };
+
           result.choices.forEach((choice: any) => {
             const hasToolCalls =
               choice.delta.tool_calls && choice.delta.tool_calls.length > 0;
             const hasContent = !!choice.delta.content;
+
+            // Get additional metadata from the delta
+            const additionalMetadata: Record<string, any> = {};
+            if (choice.delta.reasoning_text) {
+              additionalMetadata.reasoning_text = choice.delta.reasoning_text;
+            }
 
             // If delta contains tool calls, process them with the content from the same choice
             if (hasToolCalls) {
@@ -147,6 +211,8 @@ export default function Home() {
                     content: "",
                     toolCall: toolCall,
                     output: choice.delta.content || "", // Content from the same choice
+                    modelInfo: modelInfo,
+                    metadata: additionalMetadata,
                   });
                 } else if (
                   hasContent &&
@@ -162,6 +228,8 @@ export default function Home() {
               messages.push({
                 type: "text",
                 content: choice.delta.content,
+                modelInfo: modelInfo,
+                metadata: additionalMetadata,
               });
             }
           });
@@ -202,13 +270,14 @@ export default function Home() {
                   <ReactMarkdown>{message.content}</ReactMarkdown>
                 </div>
               ) : (
-                <ToolCallBlock
+                <ToolCallFactory
                   key={message.toolCall.id}
                   toolCall={message.toolCall}
                   displayMode={
                     displayConfig[message.toolCall.function.name] || "condensed"
                   }
                   output={message.output}
+                  modelInfo={message.modelInfo}
                 />
               )}
             </div>

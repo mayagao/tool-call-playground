@@ -18,6 +18,17 @@ export function DisplayConfig({
     });
   };
 
+  // Helper to determine if a tool type should default to expanded
+  const isExpandedByDefault = (toolType: string) => {
+    const expandedDefaults = [
+      "str_replace_editor",
+      "think",
+      "create_issue",
+      "report_progress",
+    ];
+    return expandedDefaults.includes(toolType);
+  };
+
   return (
     <div className="fixed bottom-4 right-4 bg-white p-4 rounded-lg shadow-lg border">
       <h3 className="text-lg font-medium mb-3">Display Configuration</h3>
@@ -48,8 +59,17 @@ export function DisplayConfig({
               }
               className="ml-2 text-sm border rounded px-2 py-1"
             >
-              <option value="condensed">Condensed</option>
-              <option value="expanded">Expanded</option>
+              {isExpandedByDefault(toolType) ? (
+                <>
+                  <option value="expanded">Expanded</option>
+                  <option value="condensed">Condensed</option>
+                </>
+              ) : (
+                <>
+                  <option value="condensed">Condensed</option>
+                  <option value="expanded">Expanded</option>
+                </>
+              )}
             </select>
           </div>
         ))}
