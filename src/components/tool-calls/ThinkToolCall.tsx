@@ -1,7 +1,7 @@
 import { ToolCall, ToolCallDisplayMode } from "@/types/tool-calls";
 import { Brain } from "lucide-react";
 import { BaseToolCall } from "./BaseToolCall";
-import ReactMarkdown from "react-markdown";
+import { MarkdownRenderer } from "../ui/renderers";
 
 interface ThinkToolCallProps {
   toolCall: ToolCall;
@@ -53,18 +53,27 @@ export function ThinkToolCall({
 
   // Generate a title that shows thought timing + truncated thought
   const title = (
-    <div className="flex items-center gap-1 truncate">
-      <span className="text-gray-500">Thought {thinkingTimeText}</span>
-      <span className=" truncate w-[600px]">{thought}</span>
+    <div className="flex items-center gap-1">
+      <span className="font-medium">Thought {thinkingTimeText}:</span>
+      <span className="text-gray-700">
+        {thought.substring(0, 50)}
+        {thought.length > 50 ? "..." : ""}
+      </span>
     </div>
   );
+
+  // Custom renderer for the arguments (the thought)
+  const renderArguments = (args: Record<string, any>) => {
+    const thoughtContent = args.thought || args.message || "";
+    return <MarkdownRenderer content={thoughtContent} />;
+  };
 
   return (
     <BaseToolCall
       toolCall={toolCall}
       displayMode={displayMode}
       output={output}
-      icon={<Brain size={16} className="text-gray-500" />}
+      icon={<Brain size={16} className="text-yellow-500" />}
       title={title}
       metadata={{
         ...args,
@@ -74,7 +83,7 @@ export function ThinkToolCall({
       defaultCollapsed={false}
       hideInitialIcon={false}
       modelInfo={modelInfo}
-      renderArguments={() => <ReactMarkdown>{thought}</ReactMarkdown>}
+      renderArguments={renderArguments}
     />
   );
 }

@@ -6,6 +6,7 @@ import {
   InfoIcon,
 } from "@primer/octicons-react";
 import { Popover, PopoverContent, PopoverTrigger } from "../ui/popover";
+import { ContentRenderer } from "../ui/renderers";
 
 export interface BaseToolCallProps {
   toolCall: ToolCall;
@@ -37,6 +38,7 @@ export function BaseToolCall({
   defaultCollapsed = false,
   modelInfo,
   hideInitialIcon = false,
+  renderArguments,
 }: BaseToolCallProps) {
   const [isCollapsed, setIsCollapsed] = useState(defaultCollapsed);
   const [localDisplayMode, setLocalDisplayMode] =
@@ -65,6 +67,9 @@ export function BaseToolCall({
     }
     setIsCollapsed(!isCollapsed);
   };
+
+  // Parse function arguments as JSON
+  const parsedArguments = JSON.parse(toolCall.function.arguments);
 
   return (
     <div
@@ -111,17 +116,21 @@ export function BaseToolCall({
         <>
           <div className="mt-2">
             <div className="text-sm text-gray-600 mb-2">Arguments:</div>
-            <pre className="bg-gray-50 p-2 rounded text-sm overflow-x-auto">
-              {JSON.stringify(JSON.parse(toolCall.function.arguments), null, 2)}
-            </pre>
+            {renderArguments ? (
+              renderArguments(parsedArguments)
+            ) : (
+              <ContentRenderer
+                content={JSON.stringify(parsedArguments, null, 2)}
+                contentType="code"
+                language="json"
+              />
+            )}
           </div>
 
           {output && (
             <div className="mt-4">
               <div className="text-sm text-gray-600 mb-2">Output:</div>
-              <pre className="bg-gray-50 p-2 rounded text-sm overflow-x-auto whitespace-pre-wrap font-mono">
-                {output}
-              </pre>
+              <ContentRenderer content={output} contentType="auto" />
             </div>
           )}
         </>
