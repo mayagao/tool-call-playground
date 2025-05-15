@@ -1,13 +1,14 @@
-import { Geist, Geist_Mono } from "next/font/google";
+import { Inter, Inter as InterMono } from "next/font/google";
 import "./globals.css";
+import "@primer/octicons/index.scss";
 
-const geistSans = Geist({
-  variable: "--font-geist-sans",
+const inter = Inter({
+  variable: "--font-inter",
   subsets: ["latin"],
 });
 
-const geistMono = Geist_Mono({
-  variable: "--font-geist-mono",
+const interMono = InterMono({
+  variable: "--font-inter-mono",
   subsets: ["latin"],
 });
 
@@ -19,9 +20,7 @@ export const metadata = {
 export default function RootLayout({ children }) {
   return (
     <html lang="en">
-      <body
-        className={`${geistSans.variable} ${geistMono.variable} antialiased`}
-      >
+      <body className={`${inter.variable} ${interMono.variable} antialiased`}>
         {children}
       </body>
     </html>

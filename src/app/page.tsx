@@ -65,6 +65,9 @@ export default function Home() {
             metadata?: Record<string, any>;
           }> = [];
 
+          // Use an offset to create sequential timestamps
+          let timeOffset = 0;
+
           // Process each result sequentially to maintain proper ordering
           data.results.forEach((result: any) => {
             // Extract only the essential model info from the result
@@ -82,8 +85,16 @@ export default function Home() {
                 choice.delta.tool_calls && choice.delta.tool_calls.length > 0;
               const hasContent = !!choice.delta.content;
 
-              // Get additional metadata from the delta
-              const additionalMetadata: Record<string, any> = {};
+              // Get additional metadata from the delta with sequential timestamps
+              const additionalMetadata: Record<string, any> = {
+                timestamp: new Date(
+                  Date.now() + timeOffset * 1000
+                ).toISOString(),
+              };
+
+              // Increase time offset for next message
+              timeOffset += 5;
+
               if (choice.delta.reasoning_text) {
                 additionalMetadata.reasoning_text = choice.delta.reasoning_text;
               }
@@ -172,6 +183,9 @@ export default function Home() {
           metadata?: Record<string, any>;
         }> = [];
 
+        // Use an offset to create sequential timestamps
+        let timeOffset = 0;
+
         // Process each result sequentially
         data.results.forEach((result: any) => {
           // Extract only the essential model info from the result
@@ -189,8 +203,14 @@ export default function Home() {
               choice.delta.tool_calls && choice.delta.tool_calls.length > 0;
             const hasContent = !!choice.delta.content;
 
-            // Get additional metadata from the delta
-            const additionalMetadata: Record<string, any> = {};
+            // Get additional metadata from the delta with sequential timestamps
+            const additionalMetadata: Record<string, any> = {
+              timestamp: new Date(Date.now() + timeOffset * 1000).toISOString(),
+            };
+
+            // Increase time offset for next message
+            timeOffset += 5;
+
             if (choice.delta.reasoning_text) {
               additionalMetadata.reasoning_text = choice.delta.reasoning_text;
             }
@@ -262,26 +282,48 @@ export default function Home() {
         <h1 className="text-3xl font-bold mb-8">Tool Calls Playground</h1>
 
         {error && <div className="mb-4 text-red-600 font-mono">{error}</div>}
-        <div className="space-y-6">
-          {messages.map((message, index) => (
-            <div key={index}>
-              {message.type === "text" ? (
-                <div className="prose prose-slate max-w-none mb-4">
-                  <ReactMarkdown>{message.content}</ReactMarkdown>
-                </div>
-              ) : (
-                <ToolCallFactory
-                  key={message.toolCall.id}
-                  toolCall={message.toolCall}
-                  displayMode={
-                    displayConfig[message.toolCall.function.name] || "condensed"
-                  }
-                  output={message.output}
-                  modelInfo={message.modelInfo}
-                />
-              )}
-            </div>
-          ))}
+        <div className="space-y-3">
+          {messages.map((message, index) => {
+            // Find previous tool call's timestamp for time calculation
+            let previousToolCallTimestamp: string | undefined;
+            if (message.type === "tool-call" && index > 0) {
+              // Look backwards to find the previous tool call's timestamp
+              for (let i = index - 1; i >= 0; i--) {
+                const prevMessage = messages[i];
+                if (
+                  prevMessage.type === "tool-call" &&
+                  prevMessage.metadata &&
+                  typeof prevMessage.metadata.timestamp === "string"
+                ) {
+                  previousToolCallTimestamp = prevMessage.metadata.timestamp;
+                  break;
+                }
+              }
+            }
+
+            return (
+              <div key={index}>
+                {message.type === "text" ? (
+                  <div className="react-markdown">
+                    <ReactMarkdown>{message.content}</ReactMarkdown>
+                  </div>
+                ) : (
+                  <ToolCallFactory
+                    key={message.toolCall.id}
+                    toolCall={message.toolCall}
+                    displayMode={
+                      displayConfig[message.toolCall.function.name] ||
+                      "condensed"
+                    }
+                    output={message.output}
+                    modelInfo={message.modelInfo}
+                    metadata={message.metadata}
+                    previousToolCallTimestamp={previousToolCallTimestamp}
+                  />
+                )}
+              </div>
+            );
+          })}
         </div>
       </div>
 

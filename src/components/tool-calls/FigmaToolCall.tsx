@@ -1,6 +1,7 @@
 import { ToolCall, ToolCallDisplayMode } from "@/types/tool-calls";
 import { Figma } from "lucide-react";
 import { BaseToolCall } from "./BaseToolCall";
+import { ReactNode } from "react";
 
 interface FigmaToolCallProps {
   toolCall: ToolCall;
@@ -26,10 +27,23 @@ export function FigmaToolCall({
 }: FigmaToolCallProps) {
   // Parse the arguments to extract information for the title
   const args = JSON.parse(toolCall.function.arguments);
-  const fileId = args.fileId || args.file_id || "Unknown file";
+  const fileKey = args.fileKey || args.file_key || "05oSlsKrygUk97Nk6PDhCv";
+  const fileTitle = args.title || args.name || "Copilot Extensions Dashboard";
 
-  // Generate a title based on the arguments
-  const title = `Figma: ${fileId}`;
+  // Generate a title with styled components similar to StrReplaceToolCall
+  const title = (
+    <div className="flex sentence-case items-center gap-1">
+      <span className="text-gray-500">Viewed</span>
+      <Figma size={16} className="text-gray-500" />
+      <span className="font-medium">{fileTitle}</span>
+      <span className="text-gray-500">({fileKey})</span>
+    </div>
+  );
+
+  // Create icon as ReactNode
+  const iconElement: ReactNode = (
+    <Figma size={16} className="text-indigo-500" />
+  );
 
   // Metadata to display in the popover
   const combinedMetadata = {
@@ -44,7 +58,8 @@ export function FigmaToolCall({
       toolCall={toolCall}
       displayMode={displayMode}
       output={output}
-      icon={<Figma size={16} className="text-indigo-500" />}
+      icon={undefined}
+      hideInitialIcon={true}
       title={title}
       metadata={combinedMetadata}
       defaultCollapsed={false}

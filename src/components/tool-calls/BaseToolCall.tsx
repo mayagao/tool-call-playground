@@ -1,6 +1,10 @@
 import { ReactNode, useState } from "react";
 import { ToolCall, ToolCallDisplayMode } from "@/types/tool-calls";
-import { ChevronDown, ChevronRight, Info } from "lucide-react";
+import {
+  ChevronDownIcon,
+  ChevronRightIcon,
+  InfoIcon,
+} from "@primer/octicons-react";
 import { Popover, PopoverContent, PopoverTrigger } from "../ui/popover";
 
 export interface BaseToolCallProps {
@@ -35,7 +39,10 @@ export function BaseToolCall({
   hideInitialIcon = false,
 }: BaseToolCallProps) {
   const [isCollapsed, setIsCollapsed] = useState(defaultCollapsed);
-  const isCondensed = displayMode === "condensed";
+  const [localDisplayMode, setLocalDisplayMode] =
+    useState<ToolCallDisplayMode>(displayMode);
+  const [isHovering, setIsHovering] = useState(false);
+  const isCondensed = localDisplayMode === "condensed";
 
   // Enhance metadata with standard information
   const enhancedMetadata = {
@@ -51,34 +58,52 @@ export function BaseToolCall({
     ...(metadata || {}),
   };
 
+  // Handler for expanding from condensed mode
+  const handleExpandClick = () => {
+    if (isCondensed) {
+      setLocalDisplayMode("expanded");
+    }
+    setIsCollapsed(!isCollapsed);
+  };
+
   return (
-    <div className="border rounded-lg p-4 mb-4 bg-white shadow-sm">
-      <div className="flex items-center justify-between mb-2">
+    <div
+      className="border rounded-md pl-2 pr-3 py-2.5 bg-white"
+      onMouseEnter={() => setIsHovering(true)}
+      onMouseLeave={() => setIsHovering(false)}
+    >
+      <div className="flex items-center justify-between">
         <div
           className="flex items-center space-x-2 cursor-pointer"
-          onClick={() => setIsCollapsed(!isCollapsed)}
+          onClick={handleExpandClick}
         >
-          {isCollapsed ? <ChevronRight size={16} /> : <ChevronDown size={16} />}
+          {isCollapsed ? (
+            <ChevronRightIcon className="text-gray-400" />
+          ) : (
+            <ChevronDownIcon className="text-gray-400" />
+          )}
           {!hideInitialIcon && <span className="mr-2">{icon}</span>}
           <span className="font-medium text-gray-700">{title}</span>
         </div>
 
         <div className="flex items-center space-x-2">
-          <Popover>
-            <PopoverTrigger>
-              <div className="flex items-center text-gray-400 hover:text-gray-700">
-                <Info size={16} />
-              </div>
-            </PopoverTrigger>
-            <PopoverContent className="w-80">
-              <div className="grid gap-2">
-                <h3 className="font-medium">Metadata</h3>
-                <pre className="bg-gray-50 p-2 rounded text-sm overflow-x-auto whitespace-pre-wrap">
-                  {JSON.stringify(enhancedMetadata, null, 2)}
-                </pre>
-              </div>
-            </PopoverContent>
-          </Popover>
+          {isHovering && (
+            <Popover>
+              <PopoverTrigger>
+                <div className="flex items-center text-gray-400 hover:text-gray-700">
+                  <InfoIcon />
+                </div>
+              </PopoverTrigger>
+              <PopoverContent className="w-80">
+                <div className="grid gap-2">
+                  <h3 className="font-medium">Metadata</h3>
+                  <pre className="bg-gray-50 p-2 rounded text-sm overflow-x-auto whitespace-pre-wrap">
+                    {JSON.stringify(enhancedMetadata, null, 2)}
+                  </pre>
+                </div>
+              </PopoverContent>
+            </Popover>
+          )}
         </div>
       </div>
 

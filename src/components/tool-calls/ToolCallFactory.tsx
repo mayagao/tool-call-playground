@@ -21,6 +21,7 @@ interface ToolCallFactoryProps {
     };
   };
   metadata?: Record<string, any>;
+  previousToolCallTimestamp?: string;
 }
 
 export function ToolCallFactory({
@@ -29,6 +30,7 @@ export function ToolCallFactory({
   output,
   modelInfo,
   metadata,
+  previousToolCallTimestamp,
 }: ToolCallFactoryProps) {
   // Determine which component to use based on the function name or type
   const functionName = toolCall.function.name.toLowerCase();
@@ -41,6 +43,7 @@ export function ToolCallFactory({
         displayMode={displayMode}
         output={output}
         modelInfo={modelInfo}
+        metadata={metadata}
       />
     );
   }
@@ -56,6 +59,8 @@ export function ToolCallFactory({
         displayMode={displayMode}
         output={output}
         modelInfo={modelInfo}
+        metadata={metadata}
+        previousToolCallTimestamp={previousToolCallTimestamp}
       />
     );
   }
@@ -72,6 +77,7 @@ export function ToolCallFactory({
         displayMode={displayMode}
         output={output}
         modelInfo={modelInfo}
+        metadata={metadata}
       />
     );
   }

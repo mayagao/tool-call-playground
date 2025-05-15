@@ -1,7 +1,9 @@
 import { ToolCall, ToolCallDisplayMode } from "@/types/tool-calls";
-import { FileEdit, Folder, FileText } from "lucide-react";
+import { FileIcon, FileDirectoryIcon } from "@primer/octicons-react";
 import { BaseToolCall } from "./BaseToolCall";
 import path from "path";
+import { ReactNode } from "react";
+import { truncatePath } from "@/utils/fileUtils";
 
 interface StrReplaceToolCallProps {
   toolCall: ToolCall;
@@ -32,18 +34,30 @@ export function StrReplaceToolCall({
   const basename = path.basename(fullPath);
   const isDirectory = !basename.includes(".");
 
+  // Get truncated path
+  const truncatedPath = truncatePath(fullPath);
+
   // Generate a title that shows the command and filename/dirname
   const title = (
     <div className="flex sentence-case items-center gap-1">
-      <span className="capitalize">{command}ed</span>
+      <span className="capitalize text-gray-500">
+        {command.endsWith("e") ? `${command}d` : `${command}ed`}
+      </span>
       {isDirectory ? (
-        <Folder size={14} className="text-gray-500" />
+        <FileDirectoryIcon className="text-gray-500 ml-0.5 mr-0.5" />
       ) : (
-        <FileText size={14} className="text-gray-500" />
+        <FileIcon className="text-gray-500 ml-0.5 mr-0.5" />
       )}
-      <span>{basename}</span>
-      <span className="text-gray-500 text-xs">({fullPath})</span>
+      <span className="font-medium">{basename}</span>
+      {truncatedPath && <span className="text-gray-500">{truncatedPath}/</span>}
     </div>
+  );
+
+  // Create icon as ReactNode to match the expected type
+  const iconElement: ReactNode = isDirectory ? (
+    <FileDirectoryIcon />
+  ) : (
+    <FileIcon />
   );
 
   return (
@@ -52,11 +66,11 @@ export function StrReplaceToolCall({
       displayMode={displayMode}
       output={output}
       hideInitialIcon={true}
-      icon={<FileEdit size={16} className="text-orange-500" />}
       title={title}
       metadata={args}
       defaultCollapsed={true}
       modelInfo={modelInfo}
+      icon={iconElement}
     />
   );
 }
