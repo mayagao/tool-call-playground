@@ -2,6 +2,7 @@ import { ToolCall, ToolCallDisplayMode } from "@/types/tool-calls";
 import { BaseToolCall } from "./BaseToolCall";
 import { CheckCircleIcon, ChecklistIcon } from "@primer/octicons-react";
 import React, { ReactElement } from "react";
+import { TruncatedContent } from "../ui/renderers";
 
 interface ReportProgressToolCallProps {
   toolCall: ToolCall;
@@ -16,6 +17,7 @@ interface ReportProgressToolCallProps {
     };
   };
   metadata?: Record<string, any>;
+  contentMaxHeight?: number;
 }
 
 export function ReportProgressToolCall({
@@ -84,7 +86,7 @@ export function ReportProgressToolCall({
               );
 
               items.push(
-                <li key={i} className="flex items-start mb-2">
+                <li key={i} className="flex items-start mb-1">
                   <span
                     className={`mr-2 ${
                       isChecked ? "text-gray-400" : "text-gray-300"
@@ -96,7 +98,7 @@ export function ReportProgressToolCall({
                     <span className={isChecked ? "" : "text-gray-400"}>
                       {text}
                     </span>
-                    <ul className="mt-2 ml-2 space-y-2">{childElements}</ul>
+                    <ul className="mt-1 ml-2 space-y-1">{childElements}</ul>
                   </div>
                 </li>
               );
@@ -106,7 +108,7 @@ export function ReportProgressToolCall({
             } else {
               // No children, just render this item
               items.push(
-                <li key={i} className="flex items-start mb-2">
+                <li key={i} className="flex items-start mb-1">
                   <span
                     className={`mr-2 ${
                       isChecked ? "text-gray-400" : "text-gray-300"
@@ -138,11 +140,11 @@ export function ReportProgressToolCall({
               );
 
               items.push(
-                <li key={i} className="flex items-center mb-2">
+                <li key={i} className="flex items-center mb-1">
                   <span className="mr-2">•</span>
                   <div className="flex-1">
                     <span>{text}</span>
-                    <ul className="mt-2 ml-4 space-y-2">{childElements}</ul>
+                    <ul className="mt-2 ml-4 space-y-1">{childElements}</ul>
                   </div>
                 </li>
               );
@@ -150,7 +152,7 @@ export function ReportProgressToolCall({
               i = nextIndex;
             } else {
               items.push(
-                <li key={i} className="flex items-center mb-2">
+                <li key={i} className="flex items-center mb-1">
                   <span className="mr-2">•</span>
                   <span>{text}</span>
                 </li>
@@ -160,7 +162,7 @@ export function ReportProgressToolCall({
           } else {
             // Regular text
             items.push(
-              <li key={i} className="mb-2">
+              <li key={i} className="mb-1">
                 <span>{line.trim()}</span>
               </li>
             );
@@ -181,14 +183,13 @@ export function ReportProgressToolCall({
     );
 
     return (
-      <div className="px-3 py-2.5">
-        <div>
-          <h3 className="font-medium text-gray-700 mb-2 flex items-center">
-            Progress Report
-          </h3>
-          <ul className="space-y-2">{listItems}</ul>
+      <TruncatedContent>
+        <div className="px-3 py-2.5">
+          <div>
+            <ul className="space-y-1">{listItems}</ul>
+          </div>
         </div>
-      </div>
+      </TruncatedContent>
     );
   };
 
@@ -200,7 +201,6 @@ export function ReportProgressToolCall({
       icon={<ChecklistIcon size={16} className="text-gray-500" />}
       title={commitMessage}
       metadata={metadata}
-      defaultCollapsed={false}
       modelInfo={modelInfo}
       renderArguments={renderArguments}
     />

@@ -1,7 +1,7 @@
 import { ToolCall, ToolCallDisplayMode } from "@/types/tool-calls";
 import { IssueOpenedIcon } from "@primer/octicons-react";
 import { BaseToolCall } from "./BaseToolCall";
-import { MarkdownRenderer } from "../ui/renderers";
+import { MarkdownRenderer, TruncatedContent } from "../ui/renderers";
 import Image from "next/image";
 
 interface CreateIssueToolCallProps {
@@ -17,6 +17,7 @@ interface CreateIssueToolCallProps {
     };
   };
   metadata?: Record<string, any>;
+  descriptionMaxHeight?: number;
 }
 
 // Component to display GitHub avatar
@@ -78,7 +79,7 @@ export function CreateIssueToolCall({
     <>
       <div className="flex items-center gap-1">
         <span className="text-gray-500 ">Created</span>
-        <IssueOpenedIcon size={16} className="ml-0.5 text-green-600" />
+        <IssueOpenedIcon size={16} className="ml-0.5 text-gray-500" />
         <span>{title}</span>
         <div className="flex flex-col gap-2 ml-2"></div>
       </div>
@@ -91,45 +92,44 @@ export function CreateIssueToolCall({
     const processedContent = processBodyContent(bodyContent);
 
     return (
-      <div className="px-3 py-2.5">
-        {processedContent && (
-          <div className="space-y-2">
-            {args.title && (
-              <div className="text-xl font-semibold">{args.title}</div>
-            )}
-            {args.assignees && args.assignees.length > 0 && (
-              <div className="mt-2 flex items-center gap-2">
-                <span className="text-gray-500 text-xs font-medium mr-1">
-                  Assigned to:
-                </span>
-                <span className="">
-                  {args.assignees.map((assignee: string, index: number) => (
-                    <GitHubAvatar key={index} username={assignee} />
-                  ))}
-                </span>
-              </div>
-            )}
-            {args.labels && args.labels.length > 0 && (
-              <div className="flex flex-wrap items-center gap-2">
-                <span className="text-gray-500 text-xs font-medium">
-                  Labels:
-                </span>
-                {args.labels.map((label: string, index: number) => (
-                  <span
-                    key={index}
-                    className="px-2 py-0.5 border capitalize border-gray-300 text-xs rounded-full"
-                  >
-                    {label}
+      <TruncatedContent>
+        <div className="px-3 py-2.5">
+          {processedContent && (
+            <div className="space-y-2">
+              {args.title && (
+                <div className="text-xl font-semibold">{args.title}</div>
+              )}
+
+              {args.assignees && args.assignees.length > 0 && (
+                <div className="mt-2 flex items-center gap-2">
+                  <span className="text-gray-500 text-xs">Assigned to</span>
+                  <span className="">
+                    {args.assignees.map((assignee: string, index: number) => (
+                      <GitHubAvatar key={index} username={assignee} />
+                    ))}
                   </span>
-                ))}
+                </div>
+              )}
+
+              {/* {args.labels && args.labels.length > 0 && (
+                <div className="flex flex-wrap items-center gap-2">
+                  {args.labels.map((label: string, index: number) => (
+                    <span
+                      key={index}
+                      className="px-2 py-0.5 border capitalize border-gray-300 text-xs rounded-full"
+                    >
+                      {label}
+                    </span>
+                  ))}
+                </div>
+              )} */}
+              <div className=" ">
+                <MarkdownRenderer content={processedContent} />
               </div>
-            )}
-            <div className=" ">
-              <MarkdownRenderer content={processedContent} />
             </div>
-          </div>
-        )}
-      </div>
+          )}
+        </div>
+      </TruncatedContent>
     );
   };
 
@@ -137,15 +137,13 @@ export function CreateIssueToolCall({
     <BaseToolCall
       toolCall={toolCall}
       displayMode={displayMode}
-      output={output}
       hideInitialIcon={true}
-      icon={<IssueOpenedIcon size={16} className="text-green-600" />}
+      output={output}
       title={componentTitle}
       metadata={{
         ...args,
         ...(metadata || {}),
       }}
-      defaultCollapsed={false}
       modelInfo={modelInfo}
       renderArguments={renderArguments}
     />

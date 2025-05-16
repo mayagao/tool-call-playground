@@ -1,7 +1,7 @@
 import { ToolCall, ToolCallDisplayMode } from "@/types/tool-calls";
 import { Brain } from "lucide-react";
 import { BaseToolCall } from "./BaseToolCall";
-import { MarkdownRenderer } from "../ui/renderers";
+import { MarkdownRenderer, TruncatedContent } from "../ui/renderers";
 
 interface ThinkToolCallProps {
   toolCall: ToolCall;
@@ -54,12 +54,11 @@ export function ThinkToolCall({
   // Generate a title that shows thought timing + truncated thought
   const title = (
     <div className="flex items-center gap-1">
-      <span className="font-medium text-gray-500 mr-1">
-        Thought {thinkingTimeText}
-      </span>
-      <span className="text-gray-700">
-        {thought.substring(0, 50)}
-        {thought.length > 50 ? "..." : ""}
+      <span className="text-gray-500 mr-1">Thought {thinkingTimeText}</span>
+      <Brain size={16} className="text-gray-500" />
+      <span className="text-gray-700 grow truncate">
+        {thought.substring(0, 80)}
+        {thought.length > 80 ? "..." : ""}
       </span>
     </div>
   );
@@ -69,7 +68,9 @@ export function ThinkToolCall({
     const thoughtContent = args.thought || args.message || "";
     return (
       <div className="px-3">
-        <MarkdownRenderer content={thoughtContent} />
+        <TruncatedContent>
+          <MarkdownRenderer content={thoughtContent} />
+        </TruncatedContent>
       </div>
     );
   };
@@ -86,8 +87,7 @@ export function ThinkToolCall({
         thinkingTimeSeconds: thinkingTime,
         ...(metadata || {}),
       }}
-      defaultCollapsed={false}
-      hideInitialIcon={false}
+      hideInitialIcon={true}
       modelInfo={modelInfo}
       renderArguments={renderArguments}
     />

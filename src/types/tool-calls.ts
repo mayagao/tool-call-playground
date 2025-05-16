@@ -39,3 +39,7 @@ export type ToolCallDisplayMode = "expanded" | "condensed";
 export interface ToolCallDisplayConfig {
   [key: string]: ToolCallDisplayMode;
 }
+
+export interface GlobalDisplaySettings {
+  maxContentHeight: number;
+}

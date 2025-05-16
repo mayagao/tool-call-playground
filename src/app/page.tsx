@@ -3,21 +3,33 @@
 import { useState, useEffect } from "react";
 import ReactMarkdown from "react-markdown";
 import { DisplayConfig } from "@/components/DisplayConfig";
-import { ToolCallDisplayConfig } from "@/types/tool-calls";
+import {
+  ToolCallDisplayConfig,
+  GlobalDisplaySettings,
+} from "@/types/tool-calls";
 import { ToolCallFactory } from "@/components/tool-calls";
 import { EndBlockDetector } from "@/components/endBlocks";
 import { ContentRenderer } from "@/components/ui/renderers";
+import { useSiteContext } from "@/context/SiteContext";
 
 export default function Home() {
   const [displayConfig, setDisplayConfig] = useState<ToolCallDisplayConfig>({
-    str_replace_editor: "expanded",
+    str_replace_editor: "condensed",
     get_figma_data: "condensed",
-    think: "expanded",
+    think: "condensed",
     bash: "condensed",
     create_issue: "expanded",
-    report_progress: "expanded",
+    report_progress: "condensed",
     endBlocks: "expanded",
   });
+
+  // Get access to the global context
+  const { globalSettings, updateGlobalSettings } = useSiteContext();
+
+  // Handler for changing global settings
+  const handleGlobalSettingsChange = (newSettings: GlobalDisplaySettings) => {
+    updateGlobalSettings(newSettings);
+  };
 
   // State for parsed tool calls
   const [toolCalls, setToolCalls] = useState<any[]>([]);
@@ -282,10 +294,8 @@ export default function Home() {
   };
 
   return (
-    <main className="min-h-screen p-8 bg-gray-50">
-      <div className="max-w-4xl mx-auto">
-        <h1 className="text-3xl font-bold mb-8">Tool Calls Playground</h1>
-
+    <main className="min-h-screen">
+      <div className="max-w-6xl mx-auto">
         {error && <div className="mb-4 text-red-600 font-mono">{error}</div>}
         <div className="space-y-3">
           {messages.map((message, index) => {
@@ -327,6 +337,8 @@ export default function Home() {
                       <ContentRenderer
                         content={message.content}
                         contentType="markdown"
+                        enableTruncation={false}
+                        showMoreEnabled={false}
                       />
                     )}
                   </div>
@@ -354,6 +366,8 @@ export default function Home() {
         config={displayConfig}
         onConfigChange={setDisplayConfig}
         onFileUpload={handleFileUpload}
+        globalSettings={globalSettings}
+        onGlobalSettingsChange={handleGlobalSettingsChange}
       />
     </main>
   );

@@ -1,4 +1,4 @@
-import { ReactNode, useState } from "react";
+import { ReactNode, useState, useEffect } from "react";
 import { ToolCall, ToolCallDisplayMode } from "@/types/tool-calls";
 import {
   ChevronDownIcon,
@@ -27,6 +27,8 @@ export interface BaseToolCallProps {
       total_tokens?: number;
     };
   };
+  argsMaxHeight?: number;
+  outputMaxHeight?: number;
 }
 
 export function BaseToolCall({
@@ -36,17 +38,32 @@ export function BaseToolCall({
   icon,
   title,
   metadata,
-  defaultCollapsed = false,
+  defaultCollapsed,
   modelInfo,
   hideInitialIcon = false,
   hideArguments = false,
   renderArguments,
+  argsMaxHeight = 200,
+  outputMaxHeight = 200,
 }: BaseToolCallProps) {
-  const [isCollapsed, setIsCollapsed] = useState(defaultCollapsed);
-  const [localDisplayMode, setLocalDisplayMode] =
-    useState<ToolCallDisplayMode>(displayMode);
+  // Initialize isCollapsed based on displayMode first, falling back to defaultCollapsed only if displayMode is "expanded"
+  const [isCollapsed, setIsCollapsed] = useState(() => {
+    if (displayMode === "condensed") {
+      return true;
+    }
+    return defaultCollapsed;
+  });
+
   const [isHovering, setIsHovering] = useState(false);
-  const isCondensed = localDisplayMode === "condensed";
+
+  // Update isCollapsed when displayMode changes, always prioritizing displayMode
+  useEffect(() => {
+    if (displayMode === "condensed") {
+      setIsCollapsed(true);
+    } else if (displayMode === "expanded") {
+      setIsCollapsed(false);
+    }
+  }, [displayMode]);
 
   // Enhance metadata with standard information
   const enhancedMetadata = {
@@ -62,11 +79,8 @@ export function BaseToolCall({
     ...(metadata || {}),
   };
 
-  // Handler for expanding from condensed mode
+  // Handler for expanding/collapsing
   const handleExpandClick = () => {
-    if (isCondensed) {
-      setLocalDisplayMode("expanded");
-    }
     setIsCollapsed(!isCollapsed);
   };
 
@@ -80,12 +94,12 @@ export function BaseToolCall({
       onMouseLeave={() => setIsHovering(false)}
     >
       <div
-        className={`flex items-center justify-between pl-2 pr-3 py-2.5 ${
+        className={`flex items-center justify-between pl-2 pr-3 py-2.5  ${
           isCollapsed ? "" : "border-b border-gray-200"
         } `}
       >
         <div
-          className="flex items-center space-x-2 cursor-pointer"
+          className="flex items-center space-x-2 cursor-pointer grow"
           onClick={handleExpandClick}
         >
           {isCollapsed ? (
@@ -94,7 +108,7 @@ export function BaseToolCall({
             <ChevronDownIcon className="text-gray-400" />
           )}
           {!hideInitialIcon && <span className="mr-2">{icon}</span>}
-          <span className="font-medium text-gray-700">{title}</span>
+          <span className="text-gray-700 grow">{title}</span>
         </div>
 
         <div className="flex items-center space-x-2">
@@ -118,7 +132,7 @@ export function BaseToolCall({
         </div>
       </div>
 
-      {!isCollapsed && !isCondensed && (
+      {!isCollapsed && (
         <>
           {!hideArguments && (
             <div className="">
@@ -129,6 +143,8 @@ export function BaseToolCall({
                   content={JSON.stringify(parsedArguments, null, 2)}
                   contentType="code"
                   language="json"
+                  enableTruncation={true}
+                  maxHeight={argsMaxHeight}
                 />
               )}
             </div>
@@ -136,7 +152,12 @@ export function BaseToolCall({
 
           {output && (
             <div className="">
-              <ContentRenderer content={output} contentType="auto" />
+              <ContentRenderer
+                content={output}
+                contentType="auto"
+                enableTruncation={true}
+                maxHeight={outputMaxHeight}
+              />
             </div>
           )}
         </>

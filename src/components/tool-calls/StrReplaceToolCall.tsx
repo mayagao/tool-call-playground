@@ -48,7 +48,7 @@ export function StrReplaceToolCall({
       ) : (
         <FileIcon className="text-gray-500 ml-0.5 mr-0.5" />
       )}
-      <span className="font-medium">{basename}</span>
+      <span>{basename}</span>
       {truncatedPath && <span className="text-gray-500">{truncatedPath}/</span>}
     </div>
   );
@@ -69,7 +69,6 @@ export function StrReplaceToolCall({
       hideArguments={true}
       title={title}
       metadata={args}
-      defaultCollapsed={true}
       modelInfo={modelInfo}
       icon={iconElement}
     />

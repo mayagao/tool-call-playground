@@ -1,4 +1,6 @@
-import React, { useEffect, useState } from "react";
+"use client";
+
+import React from "react";
 
 interface DiffRendererProps {
   content: string;
@@ -28,7 +30,7 @@ function parseHunkHeader(header: string): {
 }
 
 export function DiffRenderer({ content, className }: DiffRendererProps) {
-  const [parsedDiff, setParsedDiff] = useState<
+  const [parsedDiff, setParsedDiff] = React.useState<
     Array<{
       type: string;
       content: string;
@@ -38,22 +40,27 @@ export function DiffRenderer({ content, className }: DiffRendererProps) {
     }>
   >([]);
 
-  useEffect(() => {
+  React.useEffect(() => {
     if (!content) return;
+
+    // Trim trailing newlines and space-newlines from the content
+    const trimmedContent = content.replace(/(\n \n|\n)+$/, "");
 
     // Check if the content is a diff format
     const isDiff =
-      content.includes("@@ ") ||
-      (content.includes("+ ") && content.includes("- "));
+      trimmedContent.includes("@@ ") ||
+      (trimmedContent.includes("+ ") && trimmedContent.includes("- "));
 
     if (!isDiff) {
       // Not a diff, just return as-is
-      setParsedDiff([{ type: "normal", content, className: "" }]);
+      setParsedDiff([
+        { type: "normal", content: trimmedContent, className: "" },
+      ]);
       return;
     }
 
     // Split into lines for processing
-    const lines = content.split("\n");
+    const lines = trimmedContent.split("\n");
     const result: Array<{
       type: string;
       content: string;
@@ -196,9 +203,7 @@ export function DiffRenderer({ content, className }: DiffRendererProps) {
   // Render the diff with GitHub-style line numbers
   return (
     <div
-      className={`diff-renderer bg-gray-50 p-0 rounded overflow-hidden ${
-        className || ""
-      }`}
+      className={`diff-renderer p-0 rounded overflow-hidden ${className || ""}`}
     >
       <div className="text-sm font-mono whitespace-pre-wrap">
         {parsedDiff.map((line, index) => {
@@ -230,9 +235,9 @@ export function DiffRenderer({ content, className }: DiffRendererProps) {
           // Calculate background colors
           const bgClass =
             line.type === "deletion"
-              ? "bg-red-50"
+              ? ""
               : line.type === "addition" || line.type === "implicit-addition"
-              ? "bg-green-50"
+              ? ""
               : "";
 
           // Extract the first character (+ or -) and the rest of the content

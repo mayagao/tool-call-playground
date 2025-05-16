@@ -1,6 +1,7 @@
 import { ToolCall, ToolCallDisplayMode } from "@/types/tool-calls";
 import { TerminalIcon } from "@primer/octicons-react";
 import { BaseToolCall } from "./BaseToolCall";
+import { TruncatedContent } from "../ui/renderers";
 
 interface BashToolCallProps {
   toolCall: ToolCall;
@@ -133,7 +134,9 @@ export function BashToolCall({
   if (action) {
     title = (
       <div className="flex items-center gap-1">
-        <span className="font-medium text-gray-500">{action}:</span>
+        <span className="text-gray-500">Command: </span>
+        <TerminalIcon size={16} className="text-gray-500" />
+        <span className="text-gray-500">{action}</span>
         <span className="">{target}</span>
       </div>
     );
@@ -141,6 +144,7 @@ export function BashToolCall({
     title = (
       <div className="flex items-center gap-1">
         <span className="font-medium">Ran command:</span>
+        <TerminalIcon size={16} className="text-gray-500" />
         <span className="text-gray-700">
           {command.substring(0, 50)}
           {command.length > 50 ? "..." : ""}
@@ -161,7 +165,7 @@ export function BashToolCall({
   // Custom renderer for the arguments
   const renderArguments = (args: Record<string, any>) => (
     <div className="bg-gray-50 font-mono text-sm px-3 py-2.5 rounded-b-md">
-      {command}
+      <TruncatedContent maxHeight={150}>{command}</TruncatedContent>
     </div>
   );
 
@@ -170,12 +174,10 @@ export function BashToolCall({
       toolCall={toolCall}
       displayMode={displayMode}
       output={output}
-      icon={<TerminalIcon className="text-gray-500" />}
       title={title}
-      metadata={combinedMetadata}
-      defaultCollapsed={false}
+      metadata={metadata}
       modelInfo={modelInfo}
-      renderArguments={renderArguments}
+      hideInitialIcon={true}
     />
   );
 }

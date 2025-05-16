@@ -24,6 +24,10 @@ interface ToolCallFactoryProps {
   };
   metadata?: Record<string, any>;
   previousToolCallTimestamp?: string;
+  argsMaxHeight?: number;
+  outputMaxHeight?: number;
+  contentMaxHeight?: number;
+  descriptionMaxHeight?: number;
 }
 
 export function ToolCallFactory({
@@ -33,6 +37,10 @@ export function ToolCallFactory({
   modelInfo,
   metadata,
   previousToolCallTimestamp,
+  argsMaxHeight = 200,
+  outputMaxHeight = 200,
+  contentMaxHeight = 250,
+  descriptionMaxHeight = 200,
 }: ToolCallFactoryProps) {
   // Determine which component to use based on the function name or type
   const functionName = toolCall.function.name.toLowerCase();
@@ -105,6 +113,7 @@ export function ToolCallFactory({
         output={output}
         modelInfo={modelInfo}
         metadata={metadata}
+        descriptionMaxHeight={descriptionMaxHeight}
       />
     );
   }
@@ -121,6 +130,7 @@ export function ToolCallFactory({
         output={output}
         modelInfo={modelInfo}
         metadata={metadata}
+        contentMaxHeight={contentMaxHeight}
       />
     );
   }
@@ -137,8 +147,9 @@ export function ToolCallFactory({
       icon={<FileText size={16} className="text-blue-500" />}
       title={title}
       metadata={args}
-      defaultCollapsed={false}
       modelInfo={modelInfo}
+      argsMaxHeight={argsMaxHeight}
+      outputMaxHeight={outputMaxHeight}
     />
   );
 }

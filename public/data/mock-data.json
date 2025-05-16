@@ -45,7 +45,7 @@
       "choices": [
         {
           "delta": {
-            "content": "\ndiff --git a/home/runner/work/padawan-testing/padawan-testing b/home/runner/work/padawan-testing/padawan-testing\ncreate file mode 100644\nindex 0000000..0000000\n--- a/dev/null\n+++ b/home/runner/work/padawan-testing/padawan-testing\n@@ -1,0 +1,3 @@\n .git\n .github\n README.md\n",
+            "content": "\ndiff --git a/home/runner/work/padawan-testing/padawan-testing b/home/runner/work/padawan-testing/padawan-testing\ncreate file mode 100644\nindex 0000000..0000000\n--- a/dev/null\n+++ b/home/runner/work/padawan-testing/padawan-testing\n@@ -1,0 +1,15 @@\n .git\n .github\n README.md\n src/\n  ├── components/\n  │   ├── Button.tsx\n  │   ├── Card.tsx\n  │   └── Navigation.tsx\n  ├── pages/\n  │   ├── index.tsx\n  │   ├── about.tsx\n  │   └── dashboard.tsx\n  ├── styles/\n  │   └── globals.css\n  └── utils/\n      ├── api.ts\n      └── helpers.ts\n\n",
             "tool_calls": [
               {
                 "function": {
@@ -110,7 +110,7 @@
       "choices": [
         {
           "delta": {
-            "content": "\ndiff --git a/home/runner/work/padawan-testing/padawan-testing/README.md b/home/runner/work/padawan-testing/padawan-testing/README.md\nindex 0000000..0000000 100644\n--- a/home/runner/work/padawan-testing/padawan-testing/README.md\n+++ b/home/runner/work/padawan-testing/padawan-testing/README.md\n@@ -1,3 +1,3 @@\n # padawan-testing\n For testing Padawan - see github/sweagentd\n \n",
+            "content": "\ndiff --git a/README.md b/README.md\nindex f3cca21..f3cca21 100644\n--- a/README.md\n+++ b/README.md\n@@ -1,28 +1,28 @@\n # Padawan Testing Project\n \n A modern web application built with Next.js and TypeScript.\n \n ## Features\n \n - ⚡️ Next.js 13 for blazing fast performance\n - 🎨 Tailwind CSS for styling\n - 📱 Fully responsive design\n - 🔒 Authentication ready\n - 🌐 API integration\n \n ## Getting Started\n \n 1. Clone the repository\n 2. Install dependencies:\n    ```bash\n    npm install\n    ```\n 3. Run the development server:\n    ```bash\n    npm run dev\n    ```\n \n ## Contributing\n \n Pull requests are welcome!\n \n ## License\n \n MIT\n\ndiff --git a/src/components/Button.tsx b/src/components/Button.tsx\nindex b4c912e..b4c912e 100644\n--- a/src/components/Button.tsx\n+++ b/src/components/Button.tsx\n@@ -1,25 +1,25 @@\n import React from 'react';\n \n interface ButtonProps {\n   variant?: 'primary' | 'secondary' | 'outline';\n   size?: 'sm' | 'md' | 'lg';\n   children: React.ReactNode;\n   onClick?: () => void;\n }\n \n export const Button = ({\n   variant = 'primary',\n   size = 'md',\n   children,\n   onClick,\n }: ButtonProps) => {\n   return (\n     <button\n       className={`rounded-md font-medium ${getVariantClasses(variant)} ${getSizeClasses(size)}`}\n       onClick={onClick}\n     >\n       {children}\n     </button>\n   );\n };",
             "tool_calls": [
               {
                 "function": {

@@ -1,6 +1,8 @@
 import { Inter } from "next/font/google";
 import "./globals.css";
 import "@primer/octicons/index.scss";
+import { SiteContextProvider } from "../context/SiteContext";
+import { ToolCallHeader, ToolCallContainer } from "../components/ui";
 
 const inter = Inter({
   variable: "--font-inter",
@@ -15,7 +17,26 @@ export const metadata = {
 export default function RootLayout({ children }) {
   return (
     <html lang="en">
-      <body className={`${inter.variable} antialiased`}>{children}</body>
+      <body className={`${inter.variable} antialiased`}>
+        <SiteContextProvider>
+          <ToolCallContainer>
+            <ToolCallHeader
+              status="In progress"
+              duration="1s"
+              triggeredInfo="Triggered via issue assignment just now"
+              triggerUser="arisacoba"
+            />
+            <div
+              style={{
+                backgroundColor: "#f6f8fa",
+              }}
+              className="px-8  py-4 pb-12"
+            >
+              {children}
+            </div>
+          </ToolCallContainer>
+        </SiteContextProvider>
+      </body>
     </html>
   );
 }

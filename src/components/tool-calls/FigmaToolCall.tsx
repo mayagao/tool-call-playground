@@ -2,6 +2,7 @@ import { ToolCall, ToolCallDisplayMode } from "@/types/tool-calls";
 import { Figma } from "lucide-react";
 import { BaseToolCall } from "./BaseToolCall";
 import { ReactNode } from "react";
+import { TruncatedContent } from "../ui/renderers";
 
 interface FigmaToolCallProps {
   toolCall: ToolCall;
@@ -35,7 +36,7 @@ export function FigmaToolCall({
     <div className="flex sentence-case items-center gap-1">
       <span className="text-gray-500">Viewed</span>
       <Figma size={16} className="text-gray-500" />
-      <span className="font-medium">{fileTitle}</span>
+      <span className="">{fileTitle}</span>
       <span className="text-gray-500">({fileKey})</span>
     </div>
   );
@@ -55,7 +56,15 @@ export function FigmaToolCall({
 
   // Custom renderer for the arguments
   const renderArguments = (args: Record<string, any>) => (
-    <div className="text-sm text-gray-700 py-2.5 px-3">fileKey: {fileKey}</div>
+    <div className="text-sm text-gray-700 py-2.5 px-3">
+      <div>fileKey: {fileKey}</div>
+      {args.description && (
+        <div className="mt-2">
+          <div className="font-medium mb-1">Description:</div>
+          <div>{args.description}</div>
+        </div>
+      )}
+    </div>
   );
 
   return (
@@ -63,11 +72,9 @@ export function FigmaToolCall({
       toolCall={toolCall}
       displayMode={displayMode}
       output={output}
-      icon={undefined}
-      hideInitialIcon={true}
       title={title}
-      metadata={combinedMetadata}
-      defaultCollapsed={false}
+      metadata={metadata}
+      hideInitialIcon={true}
       modelInfo={modelInfo}
       renderArguments={renderArguments}
     />
