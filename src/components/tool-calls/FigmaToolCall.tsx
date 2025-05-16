@@ -72,6 +72,7 @@ export function FigmaToolCall({
       toolCall={toolCall}
       displayMode={displayMode}
       output={output}
+      icon={<Figma size={16} className="text-purple-500" />}
       title={title}
       metadata={metadata}
       hideInitialIcon={true}

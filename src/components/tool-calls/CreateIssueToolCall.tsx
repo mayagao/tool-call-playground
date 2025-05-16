@@ -139,6 +139,7 @@ export function CreateIssueToolCall({
       displayMode={displayMode}
       hideInitialIcon={true}
       output={output}
+      icon={<IssueOpenedIcon size={16} className="text-green-600" />}
       title={componentTitle}
       metadata={{
         ...args,

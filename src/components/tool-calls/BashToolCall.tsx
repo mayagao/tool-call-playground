@@ -2,6 +2,7 @@ import { ToolCall, ToolCallDisplayMode } from "@/types/tool-calls";
 import { TerminalIcon } from "@primer/octicons-react";
 import { BaseToolCall } from "./BaseToolCall";
 import { TruncatedContent } from "../ui/renderers";
+import React, { ReactNode } from "react";
 
 interface BashToolCallProps {
   toolCall: ToolCall;
@@ -174,6 +175,7 @@ export function BashToolCall({
       toolCall={toolCall}
       displayMode={displayMode}
       output={output}
+      icon={<TerminalIcon size={16} className="text-gray-600" />}
       title={title}
       metadata={metadata}
       modelInfo={modelInfo}
