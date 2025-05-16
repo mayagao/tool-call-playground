@@ -8,7 +8,7 @@ interface ToolCallContainerProps {
 
 export function ToolCallContainer({ children }: ToolCallContainerProps) {
   return (
-    <div className="flex flex-col min-h-screen max-w-4xl mx-auto mt-8 mb-8 border border-gray-200 rounded-lg">
+    <div className="flex flex-col min-h-screen max-w-4xl mx-auto mt-8 mb-8 border border-gray-300 rounded-lg">
       {children}
     </div>
   );

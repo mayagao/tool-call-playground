@@ -89,12 +89,12 @@ export function BaseToolCall({
 
   return (
     <div
-      className="border rounded-md bg-white"
+      className="border border-gray-300 rounded-md bg-white"
       onMouseEnter={() => setIsHovering(true)}
       onMouseLeave={() => setIsHovering(false)}
     >
       <div
-        className={`flex items-center justify-between pl-2 pr-3 py-2.5  ${
+        className={`flex items-center justify-between pl-2 pr-3 py-2  ${
           isCollapsed ? "" : "border-b border-gray-200"
         } `}
       >

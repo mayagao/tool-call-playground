@@ -1,6 +1,10 @@
-import React from "react";
+import React, { useState } from "react";
 import { ContentRenderer } from "../ui/renderers";
-import { GitPullRequestIcon } from "@primer/octicons-react";
+import {
+  GitPullRequestIcon,
+  ChevronDownIcon,
+  ChevronRightIcon,
+} from "@primer/octicons-react";
 
 interface PREndBlockProps {
   content: string;
@@ -11,6 +15,8 @@ export function PREndBlock({
   content,
   descriptionMaxHeight = 200,
 }: PREndBlockProps) {
+  const [isCollapsed, setIsCollapsed] = useState(false);
+
   // Extract PR title and description from the content
   const titleMatch = content.match(/<pr_title>([\s\S]*?)<\/pr_title>/);
   const descriptionMatch = content.match(
@@ -22,19 +28,29 @@ export function PREndBlock({
 
   return (
     <div className="border rounded-md bg-white shadow-sm">
-      <div className="flex items-center border-b border-gray-200 rounded-t-md px-4 py-2 bg-gray-50">
+      <div
+        className="flex items-center border-b border-gray-200 rounded-t-md px-4 py-2 cursor-pointer"
+        onClick={() => setIsCollapsed(!isCollapsed)}
+      >
+        {isCollapsed ? (
+          <ChevronRightIcon className="text-gray-400 mr-2" />
+        ) : (
+          <ChevronDownIcon className="text-gray-400 mr-2" />
+        )}
         <span className="text-gray-500 mr-2">Created</span>
         <GitPullRequestIcon className="text-gray-500 mr-2" />
         <span className="text-gray-800">{title}</span>
       </div>
-      <div className="px-3">
-        <ContentRenderer
-          content={description}
-          contentType="markdown"
-          enableTruncation={true}
-          maxHeight={descriptionMaxHeight}
-        />
-      </div>
+      {!isCollapsed && (
+        <div className="px-3">
+          <ContentRenderer
+            content={description}
+            contentType="markdown"
+            enableTruncation={true}
+            maxHeight={descriptionMaxHeight}
+          />
+        </div>
+      )}
     </div>
   );
 }

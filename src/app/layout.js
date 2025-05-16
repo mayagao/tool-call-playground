@@ -23,14 +23,14 @@ export default function RootLayout({ children }) {
             <ToolCallHeader
               status="In progress"
               duration="1s"
-              triggeredInfo="Triggered via issue assignment just now"
-              triggerUser="arisacoba"
+              triggeredInfo="Triggered via issue"
+              triggerUser="mayagao"
             />
             <div
               style={{
                 backgroundColor: "#f6f8fa",
               }}
-              className="px-8  py-4 pb-12"
+              className="px-8  py-4 pb-12 rounded-b-lg"
             >
               {children}
             </div>

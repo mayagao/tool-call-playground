@@ -2,6 +2,7 @@
 
 import React from "react";
 import { KebabHorizontalIcon } from "@primer/octicons-react";
+import Image from "next/image";
 
 interface ToolCallHeaderProps {
   status?: string;
@@ -13,7 +14,7 @@ interface ToolCallHeaderProps {
 export function ToolCallHeader({
   status = "In progress",
   duration = "1s",
-  triggeredInfo = "Triggered via issue assignment just now",
+  triggeredInfo = "Triggered via issue",
   triggerUser = "user",
 }: ToolCallHeaderProps) {
   return (
@@ -33,8 +34,24 @@ export function ToolCallHeader({
           <div className="flex-grow">
             <div className="text-sm text-gray-500 mb-1">{triggeredInfo}</div>
             <div className="flex items-center space-x-2">
-              <div className="h-5 w-5 rounded-full bg-gray-300 flex-shrink-0"></div>
-              <div className="font-medium">{triggerUser}</div>
+              <a
+                href={`https://github.com/${triggerUser}`}
+                target="_blank"
+                rel="noopener noreferrer"
+                className="flex items-center space-x-2 hover:text-blue-600 group"
+              >
+                <Image
+                  src={`https://avatars.githubusercontent.com/${triggerUser}`}
+                  alt={`${triggerUser}'s avatar`}
+                  width={20}
+                  height={20}
+                  className="rounded-full"
+                  unoptimized
+                />
+                <div className="font-medium group-hover:text-[#0969da] transition-colors">
+                  {triggerUser}
+                </div>
+              </a>
             </div>
           </div>
         </div>
