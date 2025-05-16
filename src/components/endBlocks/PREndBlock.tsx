@@ -37,7 +37,7 @@ export function PREndBlock({
         ) : (
           <ChevronDownIcon className="text-gray-400 mr-2" />
         )}
-        <span className="text-gray-500 mr-2">Created</span>
+        <span className="text-gray-500 mr-2">Task completed</span>
         <GitPullRequestIcon className="text-gray-500 mr-2" />
         <span className="text-gray-800">{title}</span>
       </div>

@@ -52,7 +52,7 @@ export function TruncatedContent({
         {children}
       </div>
 
-      {needsTruncation && !isExpanded && (
+      {!isExpanded && (
         <div className="absolute bottom-0 left-0 right-0 pt-40 rounded-b-md bg-gradient-to-t from-white via-white/5 to-transparent flex items-end justify-center">
           <button
             onClick={toggleExpanded}
@@ -63,14 +63,13 @@ export function TruncatedContent({
         </div>
       )}
 
-      {needsTruncation && isExpanded && (
+      {isExpanded && (
         <div className="flex justify-center mt-1">
           <button
             onClick={toggleExpanded}
-            className="flex items-center px-2 py-1 text-xs text-gray-600 bg-gray-100 hover:bg-gray-200 rounded transition-colors duration-200"
+            className="flex items-center px-2 py-1 text-xs text-gray-600 hover:text-gray-800 rounded transition-colors duration-200"
           >
-            <ChevronUpIcon className="mr-1" size={14} />
-            Show less
+            <ChevronUpIcon className="mb-1" />
           </button>
         </div>
       )}
