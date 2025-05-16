@@ -1,6 +1,6 @@
 "use client";
 
-import { useState, useEffect } from "react";
+import { useState, useEffect, useCallback, useMemo } from "react";
 import ReactMarkdown from "react-markdown";
 import { DisplayConfig } from "@/components/DisplayConfig";
 import {
@@ -293,18 +293,87 @@ export default function Home() {
     }
   };
 
+  // Memoize the toggle function to avoid recreation on each render
+  const handleExpandEndBlock = useCallback(() => {
+    // Use functional update for setState to ensure we're working with the latest state
+    setDisplayConfig((prev) => ({
+      ...prev,
+      endBlocks: "expanded",
+    }));
+
+    // Force a reflow to ensure immediate visual update
+    window.requestAnimationFrame(() => {
+      window.requestAnimationFrame(() => {
+        // This nested RAF ensures we're after the next paint
+        const blocks = document.querySelectorAll(".truncated-content");
+        blocks.forEach((block) => {
+          // Force recalculation of layout
+          block.getBoundingClientRect();
+        });
+      });
+    });
+  }, []);
+
+  // Pre-process end blocks for faster rendering
+  const processedMessages = useMemo(() => {
+    return messages.map((message) => {
+      // Add a pre-processed endBlockInfo to each message for faster rendering
+      if (
+        message.type === "text" &&
+        message.metadata?.finish_reason === "stop" &&
+        message.content.trim().startsWith("<")
+      ) {
+        // Check for PR end blocks
+        const isPR =
+          message.content.includes("<pr_title>") &&
+          message.content.includes("</pr_title>");
+
+        if (isPR) {
+          const titleMatch = message.content.match(
+            /<pr_title>([\s\S]*?)<\/pr_title>/
+          );
+          const title = titleMatch
+            ? titleMatch[1].trim()
+            : "PR Title Not Found";
+
+          // Add pre-processed info
+          return {
+            ...message,
+            endBlockInfo: {
+              type: "pr",
+              title,
+              isPR,
+            },
+          };
+        }
+
+        // Generic end block
+        return {
+          ...message,
+          endBlockInfo: {
+            type: "generic",
+            title: "Special block detected",
+            isPR: false,
+          },
+        };
+      }
+
+      return message;
+    });
+  }, [messages]);
+
   return (
     <main className="min-h-screen">
       <div className="max-w-6xl mx-auto">
         {error && <div className="mb-4 text-red-600 font-mono">{error}</div>}
         <div className="space-y-3">
-          {messages.map((message, index) => {
+          {processedMessages.map((message, index) => {
             // Find previous tool call's timestamp for time calculation
             let previousToolCallTimestamp: string | undefined;
             if (message.type === "tool-call" && index > 0) {
               // Look backwards to find the previous tool call's timestamp
               for (let i = index - 1; i >= 0; i--) {
-                const prevMessage = messages[i];
+                const prevMessage = processedMessages[i];
                 if (
                   prevMessage.type === "tool-call" &&
                   prevMessage.metadata &&
@@ -332,13 +401,7 @@ export default function Home() {
                         <CondensedEndBlock
                           content={message.content}
                           finishReason={message.metadata?.finish_reason}
-                          onClick={() => {
-                            // Toggle to expanded mode when clicked
-                            setDisplayConfig((prev) => ({
-                              ...prev,
-                              endBlocks: "expanded",
-                            }));
-                          }}
+                          onClick={handleExpandEndBlock}
                         />
                       )
                     ) : (
