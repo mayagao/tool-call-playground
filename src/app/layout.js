@@ -21,7 +21,7 @@ export default function RootLayout({ children }) {
         <SiteContextProvider>
           <ToolCallContainer>
             <ToolCallHeader
-              status="In progress"
+              status="Success"
               duration="1s"
               triggeredInfo="Triggered via issue"
               triggerUser="mayagao"

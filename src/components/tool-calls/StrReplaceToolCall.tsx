@@ -49,7 +49,9 @@ export function StrReplaceToolCall({
         <FileIcon className="text-gray-500 ml-0.5 mr-0.5" />
       )}
       <span>{basename}</span>
-      {truncatedPath && <span className="text-gray-500">{truncatedPath}/</span>}
+      {truncatedPath && (
+        <span className="text-xs text-gray-500">({truncatedPath})</span>
+      )}
     </div>
   );
 

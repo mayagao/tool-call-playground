@@ -134,7 +134,7 @@ export function BashToolCall({
   if (action) {
     title = (
       <div className="flex items-center gap-1">
-        <span className="text-gray-500">Command: </span>
+        <span className="text-gray-500">Ran command</span>
         <TerminalIcon size={16} className="text-gray-500" />
         <span className="text-gray-500">{action}</span>
         <span className="">{target}</span>
@@ -178,6 +178,7 @@ export function BashToolCall({
       metadata={metadata}
       modelInfo={modelInfo}
       hideInitialIcon={true}
+      renderArguments={renderArguments}
     />
   );
 }

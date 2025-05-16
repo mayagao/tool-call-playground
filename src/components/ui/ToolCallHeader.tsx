@@ -31,6 +31,11 @@ export function ToolCallHeader({
             <div className="font-medium">{duration}</div>
           </div>
 
+          <div className="w-20">
+            <div className="text-sm text-gray-500 mb-1">Requests</div>
+            <div className="font-medium">37</div>
+          </div>
+
           <div className="flex-grow">
             <div className="text-sm text-gray-500 mb-1">{triggeredInfo}</div>
             <div className="flex items-center space-x-2">

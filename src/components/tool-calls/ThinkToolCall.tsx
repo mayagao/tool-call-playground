@@ -54,7 +54,7 @@ export function ThinkToolCall({
   // Generate a title that shows thought timing + truncated thought
   const title = (
     <div className="flex items-center gap-1">
-      <span className="text-gray-500 mr-1">Thought {thinkingTimeText}</span>
+      <span className="text-gray-500">Thought {thinkingTimeText}</span>
       <Brain size={16} className="text-gray-500" />
       <span className="text-gray-700 grow truncate">
         {thought.substring(0, 80)}

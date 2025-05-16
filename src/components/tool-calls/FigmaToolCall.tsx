@@ -37,7 +37,7 @@ export function FigmaToolCall({
       <span className="text-gray-500">Viewed</span>
       <Figma size={16} className="text-gray-500" />
       <span className="">{fileTitle}</span>
-      <span className="text-gray-500">({fileKey})</span>
+      <span className="text-gray-500 text-xs">({fileKey})</span>
     </div>
   );
 
