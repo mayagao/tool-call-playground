@@ -8,7 +8,7 @@ import {
   GlobalDisplaySettings,
 } from "@/types/tool-calls";
 import { ToolCallFactory } from "@/components/tool-calls";
-import { EndBlockDetector } from "@/components/endBlocks";
+import { EndBlockDetector, CondensedEndBlock } from "@/components/endBlocks";
 import { ContentRenderer } from "@/components/ui/renderers";
 import { useSiteContext } from "@/context/SiteContext";
 
@@ -329,9 +329,17 @@ export default function Home() {
                           finishReason={message.metadata?.finish_reason}
                         />
                       ) : (
-                        <div className="border rounded-md bg-gray-100 p-2 text-sm text-gray-600">
-                          Special block detected (condensed view)
-                        </div>
+                        <CondensedEndBlock
+                          content={message.content}
+                          finishReason={message.metadata?.finish_reason}
+                          onClick={() => {
+                            // Toggle to expanded mode when clicked
+                            setDisplayConfig((prev) => ({
+                              ...prev,
+                              endBlocks: "expanded",
+                            }));
+                          }}
+                        />
                       )
                     ) : (
                       <ContentRenderer
