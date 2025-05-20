@@ -14,12 +14,12 @@ import { useSiteContext } from "@/context/SiteContext";
 
 export default function Home() {
   const [displayConfig, setDisplayConfig] = useState<ToolCallDisplayConfig>({
+    report_progress: "condensed",
     str_replace_editor: "condensed",
     get_figma_data: "condensed",
     think: "condensed",
     bash: "condensed",
     create_issue: "expanded",
-    report_progress: "condensed",
     endBlocks: "expanded",
   });
 

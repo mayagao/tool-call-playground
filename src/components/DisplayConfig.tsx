@@ -45,13 +45,20 @@ export function DisplayConfig({
     "checked" | "unchecked" | "indeterminate"
   >("unchecked");
 
+  // Effective config that includes 'report_progress' with a default
+  const effectiveConfig: ToolCallDisplayConfig = {
+    report_progress: "condensed", // Default for report_progress
+    ...config, // User-provided config overrides default if 'report_progress' is present
+  };
+
   // Handle individual checkbox change
   const handleCheckboxChange = (toolType: string) => {
-    const currentMode = config[toolType];
+    const currentMode = effectiveConfig[toolType]; // Use effectiveConfig
     const newMode = currentMode === "expanded" ? "condensed" : "expanded";
 
+    // Propagate change based on the full effectiveConfig structure
     onConfigChange({
-      ...config,
+      ...effectiveConfig,
       [toolType]: newMode,
     });
   };
@@ -61,7 +68,8 @@ export function DisplayConfig({
     const newMode: ToolCallDisplayMode =
       selectAllState === "checked" ? "condensed" : "expanded";
 
-    const updatedConfig = Object.keys(config).reduce((acc, toolType) => {
+    // Apply to all tools in effectiveConfig
+    const updatedConfig = Object.keys(effectiveConfig).reduce((acc, toolType) => {
       acc[toolType] = newMode;
       return acc;
     }, {} as ToolCallDisplayConfig);
@@ -82,10 +90,10 @@ export function DisplayConfig({
 
   // Update select all state based on individual checkboxes
   useEffect(() => {
-    const expandedCount = Object.values(config).filter(
+    const expandedCount = Object.values(effectiveConfig).filter( // Use effectiveConfig
       (mode) => mode === "expanded"
     ).length;
-    const totalCount = Object.keys(config).length;
+    const totalCount = Object.keys(effectiveConfig).length; // Use effectiveConfig
 
     if (expandedCount === 0) {
       setSelectAllState("unchecked");
@@ -94,7 +102,7 @@ export function DisplayConfig({
     } else {
       setSelectAllState("indeterminate");
     }
-  }, [config]);
+  }, [effectiveConfig]); // Depend on effectiveConfig
 
   return (
     <div className="fixed bottom-4 w-52 right-4 bg-white p-4 rounded-lg shadow-md border">
@@ -114,7 +122,7 @@ export function DisplayConfig({
           </label>
         </div>
 
-        {Object.entries(config).map(([toolType, mode]) => (
+        {Object.entries(effectiveConfig).map(([toolType, mode]) => ( // Use effectiveConfig
           <div key={toolType} className="flex items-center justify-between">
             <div className="flex items-center gap-2">
               {toolIcons[toolType]}
