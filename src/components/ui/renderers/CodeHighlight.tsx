@@ -23,6 +23,11 @@ export function CodeHighlight({
         style={vs}
         customStyle={{ margin: 0, borderRadius: "4px" }}
         codeTagProps={{ className: "text-sm" }}
+        showLineNumbers
+        lineNumberStyle={{
+          color: "#6b7280",
+          marginRight: "16px",
+        }}
       >
         {code}
       </SyntaxHighlighter>
