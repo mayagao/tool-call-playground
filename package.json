@@ -13,6 +13,7 @@
     "@primer/octicons": "^19.15.2",
     "@primer/octicons-react": "^19.15.2",
     "@radix-ui/react-popover": "^1.1.13",
+    "ai": "^4.3.16",
     "lucide-react": "^0.510.0",
     "next": "15.3.2",
     "react": "^19.0.0",
