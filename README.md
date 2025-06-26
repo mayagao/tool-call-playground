@@ -1,3 +1,4 @@
 The reasoning process of AI tool calls. 
 
-![CleanShot 2025-06-26 at 12 58 30@2x](https://github.com/user-attachments/assets/06f898c1-6ff2-46a2-bbfa-7a044219afdd)
+![CleanShot 2025-06-26 at 12 59 44@2x](https://github.com/user-attachments/assets/b9eecd95-9863-4314-8d04-49ce9903c4d2)
+
