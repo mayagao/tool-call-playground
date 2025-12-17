@@ -21,14 +21,23 @@ export function ModelDropdown({ models, onChange }: ModelDropdownProps) {
     }
     return modelOptions;
   }, [models]);
-  const [selectedModel, setSelectedModel] = useState<ModelOption>(
-    availableModels[0]
+  const [selectedModel, setSelectedModel] = useState<ModelOption | null>(
+    availableModels.length ? availableModels[0] : null
   );
   const [open, setOpen] = useState(false);
   const [hoveredModelId, setHoveredModelId] = useState<string | null>(null);
 
   useEffect(() => {
     if (!availableModels.length) {
+      setSelectedModel(null);
+      return;
+    }
+
+    const firstModel = availableModels[0];
+
+    if (!selectedModel) {
+      setSelectedModel(firstModel);
+      onChange?.(firstModel);
       return;
     }
 
@@ -37,11 +46,17 @@ export function ModelDropdown({ models, onChange }: ModelDropdownProps) {
     );
 
     if (!stillExists) {
-      setSelectedModel(availableModels[0]);
+      setSelectedModel(firstModel);
+      onChange?.(firstModel);
     }
-  }, [availableModels, selectedModel.id]);
+  }, [availableModels, onChange, selectedModel]);
 
   const handleSelect = (model: ModelOption) => {
+    if (model.id === selectedModel?.id) {
+      setOpen(false);
+      return;
+    }
+
     setSelectedModel(model);
     setOpen(false);
     onChange?.(model);
@@ -52,6 +67,8 @@ export function ModelDropdown({ models, onChange }: ModelDropdownProps) {
       <PopoverTrigger asChild>
         <button
           type="button"
+          aria-haspopup="listbox"
+          aria-expanded={open}
           className="group flex h-[32px] items-center gap-2 rounded-md border border-[rgba(31,35,40,0.15)] bg-white px-3 text-sm font-medium text-gray-700 shadow-[0_1px_0_rgba(31,35,40,0.04)] transition-colors hover:bg-[#f6f8fa]"
         >
           <div className="flex flex-col text-left leading-tight">
@@ -59,7 +76,7 @@ export function ModelDropdown({ models, onChange }: ModelDropdownProps) {
               Model
             </span>
             <span className="flex items-center gap-1 text-sm text-gray-700 group-hover:text-[#0969da]">
-              {selectedModel.name}
+              {selectedModel?.name ?? "Select a model"}
               <ChevronDownIcon size={12} className="text-gray-400" />
             </span>
           </div>
@@ -71,9 +88,9 @@ export function ModelDropdown({ models, onChange }: ModelDropdownProps) {
         className="w-[420px] overflow-visible border border-gray-200 bg-white p-0 shadow-lg"
       >
         <div className="relative flex">
-          <ul className="flex-1 py-2">
+          <ul className="flex-1 py-2" role="listbox" aria-label="Model options">
             {availableModels.map((model) => {
-              const isSelected = model.id === selectedModel.id;
+              const isSelected = model.id === selectedModel?.id;
               const isHovered = hoveredModelId === model.id;
               const showTooltip = isHovered || isSelected;
 
@@ -144,6 +161,12 @@ export function ModelDropdown({ models, onChange }: ModelDropdownProps) {
                 </li>
               );
             })}
+
+            {!availableModels.length && (
+              <li className="px-4 py-6 text-center text-sm text-gray-500">
+                No models available
+              </li>
+            )}
           </ul>
         </div>
       </PopoverContent>
