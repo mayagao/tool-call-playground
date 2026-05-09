@@ -222,7 +222,10 @@ export function DiffRenderer({ content, className }: DiffRendererProps) {
           }
 
           // Choose which line number to show (GitHub style)
-          const lineNumber = line.type === "deletion" ? "" : line.newLineNumber;
+          const lineNumber =
+            line.type === "deletion"
+              ? line.oldLineNumber ?? ""
+              : line.newLineNumber ?? "";
 
           // Get border colors for indicators
           const indicatorClass =
@@ -235,10 +238,10 @@ export function DiffRenderer({ content, className }: DiffRendererProps) {
           // Calculate background colors
           const bgClass =
             line.type === "deletion"
-              ? ""
+              ? "bg-red-50 hover:bg-red-100"
               : line.type === "addition" || line.type === "implicit-addition"
-              ? ""
-              : "";
+              ? "bg-green-50 hover:bg-green-100"
+              : "hover:bg-gray-100";
 
           // Extract the first character (+ or -) and the rest of the content
           const firstChar = line.content[0];
@@ -252,9 +255,11 @@ export function DiffRenderer({ content, className }: DiffRendererProps) {
               ? "text-red-700"
               : "text-gray-400";
 
+          const prefixSymbol = firstChar?.trim() ? firstChar : "\u00a0";
+
           // Render line with GitHub-style line numbers
           return (
-            <div key={index} className={`flex ${bgClass} hover:bg-green-100`}>
+            <div key={index} className={`flex ${bgClass}`}>
               {/* Line number column */}
               <div
                 className={`w-12 text-right pr-1 shrink-0 text-gray-500 select-none flex items-start justify-end`}
@@ -266,8 +271,8 @@ export function DiffRenderer({ content, className }: DiffRendererProps) {
               <div className={`shrink-0 ${indicatorClass}`}></div>
 
               {/* Line prefix (+ or -) */}
-              <div className={` flex-shrink-0 px-2 ${symbolColor} font-meidum`}>
-                {firstChar}
+              <div className={`flex-shrink-0 px-2 ${symbolColor} font-medium`}>
+                {prefixSymbol}
               </div>
 
               {/* Line content without the prefix */}
