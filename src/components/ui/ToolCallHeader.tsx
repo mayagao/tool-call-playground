@@ -3,6 +3,7 @@
 import React from "react";
 import { KebabHorizontalIcon } from "@primer/octicons-react";
 import Image from "next/image";
+import { ModelDropdown } from "./ModelDropdown";
 
 interface ToolCallHeaderProps {
   status?: string;
@@ -62,6 +63,7 @@ export function ToolCallHeader({
         </div>
 
         <div className="flex items-center gap-2">
+          <ModelDropdown />
           <button className="px-3 h-[32px] text-sm bg-[#f6f8fa] text-[#24292f] rounded-md hover:bg-[#f3f4f6] border font-medium border-[rgba(31,35,40,0.15)] shadow-[0_1px_0_rgba(31,35,40,0.04)] transition-colors">
             Re-run
           </button>
